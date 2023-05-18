@@ -47,9 +47,22 @@ async function run() {
       res.send(toyTab);
     });
 
+    // get all toys
+    app.get("/toys", async (req, res) => {
+      // const options = {
+      //     projection: {},
+      // }
+      const result = await toyCollection
+        .find({})
+        .limit(20)
+        .sort({ createdAt: -1 })
+        .toArray();
+      res.send(result);
+    });
     //  create a new toy
     app.post("/toys", async (req, res) => {
       const body = req.body;
+      body.createdAt = new Date();
       const result = await toyCollection.insertOne(body);
       res.send(result);
     });
