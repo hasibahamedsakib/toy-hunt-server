@@ -34,6 +34,20 @@ async function run() {
     const DB = client.db("TOY-HUNT-PLACE");
     const toyCollection = DB.collection("toys");
 
+    // get toy-gallery
+    const toyGallery = DB.collection("gallery");
+
+    app.get("/gallery", async (req, res) => {
+      const result = await toyGallery.find().toArray();
+      res.send(result);
+    });
+    // get toy-tab
+    const toyTab = require("./public/toy-cars.json");
+    app.get("/toyTab", (req, res) => {
+      res.send(toyTab);
+    });
+
+    //  create a new toy
     app.post("/toys", async (req, res) => {
       const body = req.body;
       const result = await toyCollection.insertOne(body);
