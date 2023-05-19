@@ -88,13 +88,30 @@ async function run() {
       const result = await toyCollection.find(query).toArray();
       res.send(result);
     });
-    // update mt toys
 
     //  create a new toy
     app.post("/toys", async (req, res) => {
       const body = req.body;
       body.createdAt = new Date();
       const result = await toyCollection.insertOne(body);
+      res.send(result);
+    });
+
+    // update my toys
+    app.put("/toys/:id", async (req, res) => {
+      const id = req.params.id;
+      const body = req.body;
+      console.log(body);
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          toyName: body.toyName,
+          price: body.price,
+          quantity: body.quantity,
+          description: body.description,
+        },
+      };
+      const result = await toyCollection.updateOne(filter, updateDoc);
       res.send(result);
     });
 
