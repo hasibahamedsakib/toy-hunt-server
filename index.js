@@ -59,6 +59,14 @@ async function run() {
         .toArray();
       res.send(result);
     });
+    // get toy by id
+    app.get("/toys/:id", async (req, res) => {
+      console.log(req.params.id);
+      const result = await toyCollection.findOne({
+        _id: new ObjectId(req.params.id),
+      });
+      res.send(result);
+    });
 
     // get my-toy
     app.get("/myToys", async (req, res) => {
@@ -69,6 +77,8 @@ async function run() {
       const result = await toyCollection.find(query).toArray();
       res.send(result);
     });
+    // update mt toys
+
     //  create a new toy
     app.post("/toys", async (req, res) => {
       const body = req.body;
