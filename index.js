@@ -49,9 +49,6 @@ async function run() {
 
     // get all toys
     app.get("/toys", async (req, res) => {
-      // const options = {
-      //     projection: {},
-      // }
       const result = await toyCollection
         .find({})
         .limit(20)
@@ -101,7 +98,6 @@ async function run() {
     app.put("/toys/:id", async (req, res) => {
       const id = req.params.id;
       const body = req.body;
-      console.log(body);
       const filter = { _id: new ObjectId(id) };
       const updateDoc = {
         $set: {
@@ -115,6 +111,13 @@ async function run() {
       res.send(result);
     });
 
+    // delete a toy
+    app.delete("/toys/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await toyCollection.deleteOne(query);
+      res.send(result);
+    });
     await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
