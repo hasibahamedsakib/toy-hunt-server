@@ -49,7 +49,6 @@ async function run() {
     const singleToy = DB.collection("singleToy");
     app.get("/singleToy/:id", async (req, res) => {
       const id = req.params.id;
-      console.log(id);
       const result = await singleToy.findOne({ id: id });
       res.send(result);
     });
