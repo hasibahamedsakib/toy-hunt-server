@@ -46,6 +46,13 @@ async function run() {
     app.get("/toyTab", (req, res) => {
       res.send(toyTab);
     });
+    const singleToy = DB.collection("singleToy");
+    app.get("/singleToy/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const result = await singleToy.findOne({ id: id });
+      res.send(result);
+    });
 
     // get all toys
     app.get("/toys", async (req, res) => {
@@ -58,7 +65,6 @@ async function run() {
     });
     // get toy by id
     app.get("/toys/:id", async (req, res) => {
-      console.log(req.params.id);
       const result = await toyCollection.findOne({
         _id: new ObjectId(req.params.id),
       });
@@ -82,7 +88,10 @@ async function run() {
       if (req.query?.email) {
         query = { sellerEmail: req.query.email };
       }
-      const result = await toyCollection.find(query).toArray();
+      const result = await toyCollection
+        .find(query)
+        // .sort({ price: -1 })
+        .toArray();
       res.send(result);
     });
 
