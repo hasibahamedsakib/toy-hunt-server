@@ -81,16 +81,24 @@ async function run() {
       res.send(searchResult);
     });
 
-    // get my-toy
+    // get my-toy and sorting by price
     app.get("/myToys", async (req, res) => {
       let query = {};
+      let sort = {};
+
       if (req.query?.email) {
         query = { sellerEmail: req.query.email };
       }
+      if (req.query?.sort) {
+        let sortValue = req?.query?.sort == "true" ? 1 : -1;
+        sort = { price: sortValue };
+      }
       const result = await toyCollection
         .find(query)
-        // .sort({ price: -1 })
+        .sort(sort)
+        .collation({ locale: "en_US", numericOrdering: true })
         .toArray();
+
       res.send(result);
     });
 
