@@ -41,17 +41,6 @@ async function run() {
       const result = await toyGallery.find().toArray();
       res.send(result);
     });
-    // get toy-tab
-    const toyTab = require("./public/toy-cars.json");
-    app.get("/toyTab", (req, res) => {
-      res.send(toyTab);
-    });
-    const singleToy = DB.collection("singleToy");
-    app.get("/singleToy/:id", async (req, res) => {
-      const id = req.params.id;
-      const result = await singleToy.findOne({ id: id });
-      res.send(result);
-    });
 
     // get all toys
     app.get("/toys", async (req, res) => {
@@ -62,18 +51,34 @@ async function run() {
         .toArray();
       res.send(result);
     });
+
     // get toy by id
-    app.get("/toys/:id", async (req, res) => {
+    app.get("/toy/:id", async (req, res) => {
       const result = await toyCollection.findOne({
         _id: new ObjectId(req.params.id),
       });
       res.send(result);
     });
 
+    // get toy by Category
+    app.get("/toys/:category", async (req, res) => {
+      if (
+        req.params.category == "sports" ||
+        req.params.category == "truck" ||
+        req.params.category == "police"
+      ) {
+        const result = await toyCollection
+          .find({ subCategory: req.params.category })
+          .toArray();
+        res.send(result);
+      }
+    });
+
     // search toy by toy-name
     const indexKey = { toyName: 1 };
     const indexOption = { name: "toyName" };
-    const result = toyCollection.createIndex(indexKey, indexOption);
+    toyCollection.createIndex(indexKey, indexOption);
+
     app.get("/searchToy/:toyName", async (req, res) => {
       const toyName = req.params.toyName;
       const query = { toyName: { $regex: toyName, $options: "i" } };
